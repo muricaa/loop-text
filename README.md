@@ -4,7 +4,7 @@ To use:
 
 1. Have a MongoDB instance running
 2. Have a School Loop account (may be hard)
-3. Create options.json with this format:
+3. Create `options.json` with this format:
 
 ```
 {
