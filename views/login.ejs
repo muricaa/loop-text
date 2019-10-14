@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <h1>Welcome to the Loop-Text Beta! v0.1.3</h1><br>
+        <form action="login" method="post">
+            School Loop Username:<input name="username" type="text" placeholder="School Loop Username"/>
+            School Loop Password:<input name="password" type="password" placeholder="School Loop Password"/>
+            Phone: <input name="phone" type="tel" placeholder="xxxxxxxxxx">
+            <select id="schools" name="school" style="width: 200px">
+
+            </select>
+            <input type="submit" value="login">
+        </form>
+    </body>
+    <script>
+        var schools = JSON.parse(`<%- schools -%>`)
+        var dropOptions = ''
+
+        for(var i in schools) {
+            dropOptions += `<option value="${schools[i].domainName}">${schools[i].name}</option>`
+        }
+
+        document.getElementById('schools').innerHTML = dropOptions
+    </script>
+</html>

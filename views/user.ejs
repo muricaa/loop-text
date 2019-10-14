@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <title>User Page</title>        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="http://localhost:1337/bootstrap-clockpicker.min.css">
+        <style>
+            .cardMarg{
+                margin: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="http://localhost:1337/bootstrap-clockpicker.min.js"></script>
+        
+        <nav class="navbar navbar-expand-lg navbard-dark bg-dark">
+            <a class="navbar-brand" href="">LooperTexter</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto" id="navitems">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="card cardMarg">
+            <div class="card-header">
+                <h1>Hello <%= basicInfo.fullName %></h1>
+            </div>
+            <div class="card-body">
+                <form action="updatesettings" method="post">
+                    <div class="row">
+                        <div class="col">
+                            <p>Time to send the text:</p>
+                            <div class="input-group clockpicker">
+                                <input type="text" name="time" id="time" class="form-control">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div> <br>
+                            <p>Assignment Warning:</p> <input id="daysBefore" name="daysBefore" type="number" step=".5" min="1"> <br>
+                        </div>
+                        <div class="col">
+                            <div id="classOpt">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <input value="Update" type="submit">
+                </form>
+                <button onclick="logout()">Logout</button>
+                <p>Schoolloop passwords are encrypted btw</p>
+            </div>
+        </div>
+    </body>
+    <script>
+        $('.clockpicker').clockpicker({
+            donetext: 'Done'
+        })
+        var schoolData = JSON.parse('<%- courses %>')
+        var settings = '<%- settings %>'
+        var isAdmin = JSON.parse('<%- admin %>')
+
+        var classHTML = ''
+        for(var i in schoolData) {
+            classHTML += `${schoolData[i].courseName} emoji: <input id='${schoolData[i].teacherID}' name='${schoolData[i].teacherID}' type="text"> <br>`
+        }
+        window.onload = () => {
+            if(settings.length > 1) {
+                settings = JSON.parse(settings)
+                document.getElementById('time').value = settings.time
+                document.getElementById('daysBefore').value = settings.daysBefore
+                for(var x in Object.keys(settings)) {
+                    if(Object.keys(settings)[x] == 'time' || Object.keys(settings)[x] == 'daysBefore') continue
+                    var teacherID = Object.keys(settings)[x]
+                    document.getElementById(teacherID).value = settings[teacherID]
+                }
+            }
+            if(isAdmin) {
+                var x = document.getElementById('navitems').innerHTML
+                x += `<li class="nav-item active"><a class="nav-link" href="admin">Admin</a></li>`
+                document.getElementById('navitems').innerHTML = x
+            }
+        }
+        document.getElementById(`classOpt`).innerHTML = classHTML
+
+        function logout() {
+            console.log('logout')
+            window.location.href = '/logout'
+        }   
+    </script>
+</html>
